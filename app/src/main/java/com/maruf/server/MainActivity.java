@@ -1,6 +1,8 @@
 package com.maruf.server;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -13,16 +15,20 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
+    TextView tvdisplay;
 
-    TextView tvname,tvmail,tvnumber,tvadress;
 
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -34,51 +40,70 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        tvname=findViewById(R.id.name);
-        tvmail=findViewById(R.id.mail);
-        tvnumber=findViewById(R.id.number);
-        tvadress=findViewById(R.id.adress);
+        tvdisplay=findViewById(R.id.tvdisplay);
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://192.168.1.107/apps/data.json";
-
-// Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        try {
-                            JSONObject jsonObjec = new JSONObject(response);
-                            String name = jsonObjec.getString("name");
-                            String Number = jsonObjec.getString("Number");
-                            String mail = jsonObjec.getString("mail");
-                            String Adress = jsonObjec.getString("Adress");
-
-                            tvname.setText(name);
-                            tvnumber.setText(Number);
-                            tvmail.setText(mail);
-                            tvadress.setText(Adress);
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
 
 
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
+        String url = "http://192.168.1.107/apps/video.json";
 
-                    }
-                }, new Response.ErrorListener() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
 
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void onResponse(JSONArray jsonArray) {
 
-                error.printStackTrace();
+                JSONObject jsonObject = null;
+                try {
+                    for (int x=0;x<jsonArray.length();x++){
+                        jsonObject = jsonArray.getJSONObject(x);
+                        String title = jsonObject.getString("title");
+                        String video_id = jsonObject.getString("video_id");
+                        tvdisplay.append(x+". "+title+"\n"+video_id+"\n\n");
+                        Log.d("serverresponse", jsonObject.toString());
+
+
+                    }
+
+
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("serverresponse", "Error: " + volleyError.toString());
+
             }
         });
+        requestQueue.add(jsonArrayRequest);
 
-// Add the request to the RequestQueue.
-        queue.add(stringRequest);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     ///******************************************************************
     }
 
 }
