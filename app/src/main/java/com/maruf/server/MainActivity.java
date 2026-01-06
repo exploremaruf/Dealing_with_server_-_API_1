@@ -24,9 +24,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
+
     TextView tvdisplay;
-
-
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -40,10 +39,9 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        tvdisplay=findViewById(R.id.tvdisplay);
+        tvdisplay = findViewById(R.id.tvdisplay);
 
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-
 
         String url = "http://192.168.1.107/apps/video.json";
 
@@ -54,56 +52,32 @@ public class MainActivity extends AppCompatActivity {
 
                 JSONObject jsonObject = null;
                 try {
-                    for (int x=0;x<jsonArray.length();x++){
+                    for (int x = 0; x < jsonArray.length(); x++) {
                         jsonObject = jsonArray.getJSONObject(x);
                         String title = jsonObject.getString("title");
                         String video_id = jsonObject.getString("video_id");
-                        tvdisplay.append(x+". "+title+"\n"+video_id+"\n\n");
+                        tvdisplay.append(x + ". " + title + "\n" + video_id + "\n\n");
                         Log.d("serverresponse", jsonObject.toString());
 
-
                     }
-
 
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-
-
-
 
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+
                 Log.e("serverresponse", "Error: " + volleyError.toString());
 
             }
         });
         requestQueue.add(jsonArrayRequest);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     ///******************************************************************
+        ///******************************************************************
     }
 
 }
