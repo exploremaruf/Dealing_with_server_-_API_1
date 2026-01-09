@@ -3,6 +3,12 @@ package com.maruf.server;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -23,9 +29,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
 
-    TextView tvdisplay;
+    ProgressBar progressBar;
+
+    ListView listview;
+
+    ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
+
+    HashMap<String, String> hashMap;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -39,11 +54,14 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        tvdisplay = findViewById(R.id.tvdisplay);
+        //******************************************************************************************
+        //******************************************************************************************
+        progressBar = findViewById(R.id.progressBar);
+        listview = findViewById(R.id.listview);
 
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
 
-        String  url = "http://192.168.1.107/apps/video.json";
+        String url = "http://192.168.1.107/apps/video.json";
 
         JsonArrayRequest arrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
 
@@ -51,22 +69,24 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(JSONArray jsonArray) {
 
                 try {
-                    for (int x=0;x<jsonArray.length();x++){
+                    for (int x = 0; x < jsonArray.length(); x++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(x);
                         String title = jsonObject.getString("title");
-                        String video_id=jsonObject.getString("video_id");
-                        tvdisplay.append(title+"\n"+video_id+"\n\n");
+                        String video_id = jsonObject.getString("video_id");
+                        HashMap hashMap = new HashMap();
+                        hashMap.put("title", title);
+                        hashMap.put("video_id", video_id);
+                        arrayList.add(hashMap);
+
                         Log.d(
                                 "serverresponse",
                                 "Response received\nTitle: " + title + "\nVideo ID: " + video_id
                         );
 
-
-
                     }
-
-
+                    Myadapter myadapter = new Myadapter();
+                    listview.setAdapter(myadapter);
 
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
@@ -78,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Log.d("serverresponse","the error is"+ volleyError.getMessage());
+
+                Log.d("serverresponse", "the error is" + volleyError.getMessage());
 
             }
         }
@@ -86,10 +107,36 @@ public class MainActivity extends AppCompatActivity {
         );
         requestQueue.add(arrayRequest);
 
-
-
-
         ///******************************************************************
+    }
+    //*************************************************************************
+
+    private class Myadapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+
+            return 0;
+        }
+
+        @Override
+        public Object getItem(int position) {
+
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            return null;
+        }
+
     }
 
 }
