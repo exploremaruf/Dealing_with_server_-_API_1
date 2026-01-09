@@ -5,10 +5,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONArray jsonArray) {
-//                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
 
                 try {
                     for (int x = 0; x < jsonArray.length(); x++) {
@@ -140,10 +143,19 @@ public class MainActivity extends AppCompatActivity {
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View myview = inflater.inflate(R.layout.item, parent, false);
 
+            TextView tvtitle = myview.findViewById(R.id.video_title);
+            ImageView thambnail = myview.findViewById(R.id.video_thambnail);
+
 
             HashMap<String,String> hashMap = arrayList.get(position);
             String title = hashMap.get("title");
             String video_id = hashMap.get("video_id");
+
+            tvtitle.setText(title);
+            String thambnailurl="http://img.youtube.com/vi/"+video_id+"/0.jpg";
+
+            Picasso.get().load(thambnailurl).placeholder(R.drawable.casual_tshirt).into(thambnail);
+
 
 
             return myview;
