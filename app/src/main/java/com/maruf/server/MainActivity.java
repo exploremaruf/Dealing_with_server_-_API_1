@@ -43,26 +43,34 @@ public class MainActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
 
-        String url = "http://192.168.1.107/apps/video.json";
+        String  url = "http://192.168.1.107/apps/video.json";
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
 
             @Override
             public void onResponse(JSONArray jsonArray) {
 
-                JSONObject jsonObject = null;
                 try {
-                    for (int x = 0; x < jsonArray.length(); x++) {
-                        jsonObject = jsonArray.getJSONObject(x);
+                    for (int x=0;x<jsonArray.length();x++){
+
+                        JSONObject jsonObject = jsonArray.getJSONObject(x);
                         String title = jsonObject.getString("title");
-                        String video_id = jsonObject.getString("video_id");
-                        tvdisplay.append(x + ". " + title + "\n" + video_id + "\n\n");
-                        Log.d("serverresponse", jsonObject.toString());
+                        String video_id=jsonObject.getString("video_id");
+                        tvdisplay.append(title+"\n"+video_id+"\n\n");
+                        Log.d(
+                                "serverresponse",
+                                "Response received\nTitle: " + title + "\nVideo ID: " + video_id
+                        );
+
+
 
                     }
 
+
+
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
+
                 }
 
             }
@@ -70,12 +78,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-
-                Log.e("serverresponse", "Error: " + volleyError.toString());
+                Log.d("serverresponse","the error is"+ volleyError.getMessage());
 
             }
-        });
-        requestQueue.add(jsonArrayRequest);
+        }
+
+        );
+        requestQueue.add(arrayRequest);
+
+
+
 
         ///******************************************************************
     }
