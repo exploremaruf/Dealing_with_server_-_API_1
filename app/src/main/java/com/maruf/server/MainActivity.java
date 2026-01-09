@@ -1,8 +1,10 @@
 package com.maruf.server;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(JSONArray jsonArray) {
+//                progressBar.setVisibility(View.GONE);
 
                 try {
                     for (int x = 0; x < jsonArray.length(); x++) {
@@ -116,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
 
-            return 0;
+            return arrayList.size();
         }
 
         @Override
@@ -134,7 +137,16 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            return null;
+            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View myview = inflater.inflate(R.layout.item, parent, false);
+
+
+            HashMap<String,String> hashMap = arrayList.get(position);
+            String title = hashMap.get("title");
+            String video_id = hashMap.get("video_id");
+
+
+            return myview;
         }
 
     }
