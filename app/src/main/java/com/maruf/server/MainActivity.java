@@ -26,6 +26,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
@@ -66,37 +67,21 @@ public class MainActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
 
-        String url = "http://192.168.1.107/apps/video.json";
+        String url = "http://192.168.1.107/apps/producs.json";
 
-        JsonArrayRequest arrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        JsonObjectRequest arrayRequest =  new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
             @Override
-            public void onResponse(JSONArray jsonArray) {
-                progressBar.setVisibility(View.GONE);
+            public void onResponse(JSONObject jsonObject) {
 
                 try {
-                    for (int x = 0; x < jsonArray.length(); x++) {
+                    JSONObject jsonObject1 = jsonObject.getJSONObject("products");
 
-                        JSONObject jsonObject = jsonArray.getJSONObject(x);
-                        String title = jsonObject.getString("title");
-                        String video_id = jsonObject.getString("video_id");
-                        HashMap hashMap = new HashMap();
-                        hashMap.put("title", title);
-                        hashMap.put("video_id", video_id);
-                        arrayList.add(hashMap);
+                    Log.d("serverresponse",""+jsonObject);
 
-                        Log.d(
-                                "serverresponse",
-                                "Response received\nTitle: " + title + "\nVideo ID: " + video_id
-                        );
-
-                    }
-                    Myadapter myadapter = new Myadapter();
-                    listview.setAdapter(myadapter);
 
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
-
                 }
 
             }
@@ -105,13 +90,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
 
-                Log.d("serverresponse", "the error is" + volleyError.getMessage());
-
             }
         }
 
         );
-        requestQueue.add(arrayRequest);
 
         ///******************************************************************
     }
